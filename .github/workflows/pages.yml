@@ -21,11 +21,20 @@ jobs:
       url: ${{ steps.deploy.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      # The site is plain static files — nothing to build.
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/checkout@v7
+
+      # Requires Pages to already be enabled with "GitHub Actions" as the
+      # source (Settings -> Pages). The action's `enablement: true` option
+      # cannot do it for us here: it needs a PAT, not the default GITHUB_TOKEN.
+      - uses: actions/configure-pages@v6
+
+      # The site is plain static files, so the repo root is the artifact.
+      # Hidden files are excluded by default, which is what we want — .git and
+      # .github are dropped regardless, and .nojekyll is not needed because
+      # this path serves the artifact directly without running Jekyll.
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: .
+
       - id: deploy
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
