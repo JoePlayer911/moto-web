@@ -1,0 +1,16 @@
+{
+  "name": "輪便所二手機車 Ray's Garage",
+  "short_name": "輪便所",
+  "description": "台中中古機車買賣・現金收購・新車販售・免費線上估價",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b0b0c",
+  "theme_color": "#0b0b0c",
+  "lang": "zh-Hant-TW",
+  "icons": [
+    { "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

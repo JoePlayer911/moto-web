@@ -1,0 +1,15 @@
+{
+  "name": "rays-garage",
+  "version": "1.0.0",
+  "private": true,
+  "description": "輪便所二手機車 Ray's Garage — Taichung scooter shop landing page",
+  "type": "module",
+  "scripts": {
+    "dev": "node --run serve",
+    "serve": "node tools/serve.mjs",
+    "ig": "node tools/fetch-instagram.mjs",
+    "ig:split": "node tools/fetch-instagram.mjs --split",
+    "assets": "python tools/make-assets.py"
+  },
+  "engines": { "node": ">=18" }
+}
