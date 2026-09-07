@@ -68,50 +68,6 @@ html.js [data-split='whole'].is-in > span {
     opacity   .6s  var(--e-out) .16s;
 }
 
-/* ==================================================================== rig ---
-   The scooter draws itself on stroke by stroke, then rides: wheels turning,
-   body breathing on its suspension, streaks running past.
-   pathLength="1" on every stroke normalises the dash maths regardless of how
-   long the real path is.
-   -------------------------------------------------------------------------- */
-html.js .rig[data-reveal]        { opacity: 0; transform: none; }
-html.js .rig[data-reveal].is-in  { opacity: 1; transition: opacity .4s var(--e-out); }
-
-html.js .rig .rig__p     { stroke-dasharray: 1; stroke-dashoffset: 1; }
-html.js .rig .rig__body,
-html.js .rig .rig__seat  { fill-opacity: 0; }
-html.js .rig .rig__wheel { opacity: 0; }
-
-html.js .rig.is-in .rig__p     { animation: rigDraw 1s var(--e-out) forwards; }
-html.js .rig.is-in .rig__body,
-html.js .rig.is-in .rig__seat  { animation: rigDraw 1.15s var(--e-out) forwards, rigFill .7s var(--e-out) .75s forwards; }
-html.js .rig.is-in .rig__wheel { animation: rigPop .6s var(--e-back) .5s forwards; }
-
-/* stroke order: frame first, then the parts hung off it */
-html.js .rig.is-in .rig__seat   { animation-delay: .18s, .9s; }
-html.js .rig.is-in .rig__fender { animation-delay: .34s; }
-html.js .rig.is-in .rig__fork   { animation-delay: .42s; }
-html.js .rig.is-in .rig__bar    { animation-delay: .5s; }
-html.js .rig.is-in .rig__trim   { animation-delay: .6s; }
-html.js .rig.is-in .rig__lamp   { animation-delay: .72s; }
-html.js .rig.is-in .rig__vent   { animation-delay: .84s; }
-
-/* wheels turn about their own hubs */
-.rig__spin { transform-box: view-box; }
-.rig__spin--rear  { transform-origin: 278px 440px; }
-.rig__spin--front { transform-origin: 702px 440px; }
-html.js .rig.is-in .rig__spin { animation: spin 2.6s linear infinite 1.1s; }
-
-/* the whole bike breathes on its suspension */
-html.js .rig.is-in .rig__svg { animation: rigBob 3.4s ease-in-out infinite 1.2s; }
-
-/* streaks */
-.rig__speed path { opacity: 0; }
-html.js .rig.is-in .rig__speed path { animation: rigStreak 1.5s linear infinite 1.2s; }
-html.js .rig.is-in .rig__speed path:nth-child(2) { animation-delay: 1.55s; }
-html.js .rig.is-in .rig__speed path:nth-child(3) { animation-delay: 1.35s; }
-html.js .rig.is-in .rig__speed path:nth-child(4) { animation-delay: 1.75s; }
-
 /* ------------------------------------------------- chrome / brand accents --- */
 /* Applied to the inner span: it owns the text, so the clip has something to
    clip against and the line still animates as one piece. */
@@ -170,15 +126,6 @@ html.theme-sweep::view-transition-new(root) {
 /* ------------------------------------------------------------- keyframes --- */
 @keyframes spin { to { transform: rotate(360deg); } }
 
-@keyframes rigDraw { to { stroke-dashoffset: 0; } }
-@keyframes rigFill { to { fill-opacity: 1; } }
-@keyframes rigPop  { from { opacity: 0; transform: scale(.9); } to { opacity: 1; transform: none; } }
-@keyframes rigBob  { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
-@keyframes rigStreak {
-  0%   { opacity: 0;   transform: translateX(70px); }
-  22%  { opacity: .55; }
-  100% { opacity: 0;   transform: translateX(-90px); }
-}
 
 @keyframes chromeDrift {
   0%   { background-position:   0% 50%; }
@@ -229,16 +176,6 @@ html.theme-sweep::view-transition-new(root) {
   .grain { display: none; }
   .hero__sheen { display: none; }
 
-  /* The scooter is content, not decoration — show it complete and static. */
-  html.js .rig[data-reveal],
-  html.js .rig[data-reveal].is-in { opacity: 1 !important; }
-  html.js .rig .rig__p { stroke-dashoffset: 0 !important; }
-  html.js .rig .rig__body,
-  html.js .rig .rig__seat { fill-opacity: 1 !important; }
-  html.js .rig .rig__wheel { opacity: 1 !important; }
-  .rig__speed { display: none; }
-  html.js .rig .rig__spin,
-  html.js .rig .rig__svg { animation: none !important; }
   .hero__title .line--alt > span { animation: none; background-position: 40% 50%; }
   .ticker__row { transform: none !important; }
   .rail__track { transform: none !important; }
