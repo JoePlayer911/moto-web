@@ -86,8 +86,9 @@
 
 <!-- custom cursor -------------------------------------------------------- -->
 <div class="cursor" id="cursor" aria-hidden="true">
+  <div class="cursor__ring"></div>
   <div class="cursor__dot"></div>
-  <div class="cursor__ring"><span class="cursor__label"></span></div>
+  <div class="cursor__pill"><span class="cursor__label"></span></div>
 </div>
 
 <!-- header --------------------------------------------------------------- -->
@@ -172,9 +173,101 @@
       <span class="line line--alt" data-split="whole"><span data-i18n="hero.l3">都在輪便所</span></span>
     </h1>
 
-    <div class="hero__badge" id="heroBadge" data-cursor="RAY'S">
-      <img src="assets/logo-512.png" alt="輪便所 Ray's Garage 商標" width="300" height="300">
-      <span class="hero__sheen" aria-hidden="true"></span>
+    <!-- Hand-drawn scooter, matching the one on the shop badge. Inline so it
+         inherits the theme tokens and can be drawn on stroke by stroke. -->
+    <div class="rig" id="heroRig" data-reveal>
+      <svg class="rig__svg" viewBox="4 30 802 500" role="img"
+           aria-label="輪便所 Ray's Garage — 速可達機車線稿">
+        <defs>
+          <linearGradient id="rigSkin" x1="0" y1="0" x2="0" y2="1">
+            <stop class="rig__skin-a" offset="0"/>
+            <stop class="rig__skin-b" offset="1"/>
+          </linearGradient>
+        </defs>
+
+        <!-- speed streaks -->
+        <g class="rig__speed" aria-hidden="true">
+          <path d="M 24 300 L 132 300"/>
+          <path d="M 44 344 L 138 344"/>
+          <path d="M 12 388 L 124 388"/>
+          <path d="M 52 432 L 130 432"/>
+        </g>
+
+        <!-- body: rear cowl, step-through, floorboard, leg shield -->
+        <path class="rig__p rig__body" pathLength="1" fill="url(#rigSkin)" d="
+          M 152 402
+          C 138 350, 150 300, 190 276
+          C 244 244, 340 248, 386 282
+          C 408 300, 419 332, 425 356
+          C 431 372, 444 378, 462 376
+          L 502 372
+          C 512 302, 530 212, 562 162
+          C 576 140, 592 129, 610 125
+          L 644 121
+          C 662 119, 672 131, 669 149
+          C 660 208, 654 272, 650 332
+          C 648 360, 640 375, 622 379
+          L 424 386
+          C 396 340, 190 330, 152 402 Z"/>
+
+        <!-- seat -->
+        <path class="rig__p rig__seat" pathLength="1" fill="url(#rigSkin)" d="
+          M 200 279
+          C 190 250, 210 234, 242 231
+          L 352 229
+          C 378 228, 389 243, 384 266
+          C 340 250, 250 252, 200 279 Z"/>
+
+        <!-- leg-shield trim -->
+        <path class="rig__p rig__trim" pathLength="1" d="M 546 350 C 556 280, 572 214, 596 172"/>
+
+        <!-- front fender: a thick stroke reads as a solid crescent -->
+        <path class="rig__p rig__fender" pathLength="1" d="
+          M 632 400
+          C 638 358, 664 348, 702 348
+          C 748 348, 780 376, 788 418"/>
+
+        <!-- fork -->
+        <path class="rig__p rig__fork" pathLength="1" d="M 650 352 C 668 382, 686 412, 702 440"/>
+
+        <!-- handlebar + mirror -->
+        <path class="rig__p rig__bar" pathLength="1" d="M 648 122 C 664 100, 692 92, 720 100 L 736 104"/>
+        <path class="rig__p rig__bar" pathLength="1" d="M 726 100 L 752 62"/>
+        <circle class="rig__p rig__bar" pathLength="1" cx="757" cy="54" r="12"/>
+
+        <!-- headlight -->
+        <circle class="rig__p rig__lamp" pathLength="1" cx="696" cy="148" r="27"/>
+
+        <!-- cowl vents -->
+        <path class="rig__p rig__vent" pathLength="1" d="M 216 332 L 284 332"/>
+        <path class="rig__p rig__vent" pathLength="1" d="M 212 354 L 280 354"/>
+        <path class="rig__p rig__vent" pathLength="1" d="M 214 376 L 282 376"/>
+
+        <!-- wheels -->
+        <g class="rig__wheel">
+          <circle class="rig__well" cx="278" cy="440" r="80"/>
+          <circle class="rig__tyre" cx="278" cy="440" r="73"/>
+          <g class="rig__spin rig__spin--rear">
+            <circle class="rig__rim" cx="278" cy="440" r="53"/>
+            <circle class="rig__hole" cx="278" cy="401" r="10"/>
+            <circle class="rig__hole" cx="312" cy="460" r="10"/>
+            <circle class="rig__hole" cx="244" cy="460" r="10"/>
+          </g>
+          <circle class="rig__hub" cx="278" cy="440" r="15"/>
+        </g>
+
+        <g class="rig__wheel">
+          <circle class="rig__well" cx="702" cy="440" r="80"/>
+          <circle class="rig__tyre" cx="702" cy="440" r="73"/>
+          <g class="rig__spin rig__spin--front">
+            <circle class="rig__rim" cx="702" cy="440" r="53"/>
+            <circle class="rig__hole" cx="702" cy="401" r="10"/>
+            <circle class="rig__hole" cx="736" cy="460" r="10"/>
+            <circle class="rig__hole" cx="668" cy="460" r="10"/>
+          </g>
+          <circle class="rig__hub" cx="702" cy="440" r="15"/>
+        </g>
+      </svg>
     </div>
 
     <p class="hero__lede" data-i18n="hero.lede">買賣機車大小事就交給我們。持續紀錄與客戶從 0 到 1 的每一段過程。</p>

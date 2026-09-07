@@ -147,42 +147,87 @@
 @media (width < 62rem) { .burger { display: block; } }
 
 /* ---------------------------------------------------------------- cursor --- */
-.cursor { position: fixed; inset-block-start: 0; inset-inline-start: 0; z-index: 9500; pointer-events: none; opacity: 0; transition: opacity .3s; }
+/* The native cursor is hidden only once JS has confirmed this pointer gets a
+   custom one, so touch, no-JS and reduced-motion visitors keep theirs. */
+html.has-cursor,
+html.has-cursor * { cursor: none !important; }
+
+.cursor {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  z-index: 9500;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .25s;
+}
 .cursor.is-live { opacity: 1; }
+
 .cursor__dot,
-.cursor__ring {
+.cursor__ring,
+.cursor__pill {
   position: absolute;
   inset-block-start: 0;
   inset-inline-start: 0;
-  border-radius: 999px;
-  transform: translate(-50%, -50%);
+  will-change: transform;
 }
+
+/* The dot is the actual pointer now — it never disappears. */
 .cursor__dot {
-  inline-size: 5px; block-size: 5px;
+  inline-size: 7px;
+  block-size: 7px;
+  border-radius: 999px;
   background: var(--brand);
+  box-shadow: 0 0 0 1.5px rgb(0 0 0 / 28%);
 }
+
+/* A restrained ring: it acknowledges the target without covering it. */
 .cursor__ring {
-  inline-size: 34px; block-size: 34px;
-  display: grid;
-  place-items: center;
+  inline-size: 30px;
+  block-size: 30px;
+  border-radius: 999px;
   border: 1px solid var(--fg-3);
-  transition: inline-size .38s var(--e-out), block-size .38s var(--e-out),
-              background-color .38s var(--e-out), border-color .38s var(--e-out);
+  transition:
+    inline-size .32s var(--e-out),
+    block-size  .32s var(--e-out),
+    border-color .32s var(--e-out),
+    opacity .32s var(--e-out);
 }
+.cursor.is-hover .cursor__ring {
+  inline-size: 44px;
+  block-size: 44px;
+  border-color: var(--brand);
+}
+
+/* Label pill — drops out from under the cursor, the way an interaction hint
+   does in a game. Sits below the pointer so it never covers the target. */
 .cursor__label {
-  font-family: var(--f-mono);
-  font-size: .55rem;
-  font-weight: 700;
-  letter-spacing: .12em;
+  display: block;
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  padding: .32rem .8rem .3rem;
+  border-radius: 999px;
+  background: var(--brand);
   color: #0b0b0c;
-  opacity: 0;
-  transform: scale(.6);
-  transition: opacity .3s, transform .3s var(--e-back);
+  font-family: var(--f-mono);
+  font-size: .56rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
   white-space: nowrap;
+  box-shadow: 0 6px 18px -6px rgb(0 0 0 / 55%);
+  transform: translate(-50%, -4px) scale(.7);
+  opacity: 0;
+  transition:
+    transform .34s var(--e-back),
+    opacity .18s var(--e-out);
 }
-.cursor.is-hover .cursor__ring { inline-size: 68px; block-size: 68px; background: var(--brand); border-color: var(--brand); }
-.cursor.is-hover .cursor__dot { opacity: 0; }
-.cursor.is-hover .cursor__label { opacity: 1; transform: scale(1); }
+.cursor.has-label .cursor__label {
+  transform: translate(-50%, 20px) scale(1);
+  opacity: 1;
+}
+
 @media (hover: none), (pointer: coarse) { .cursor { display: none; } }
 
 /* ---------------------------------------------------------------- loader --- */
@@ -768,4 +813,43 @@ input[type='range']:hover::-webkit-slider-thumb { transform: scale(1.22); }
   }
   .dock__btn--line { color: var(--line-green); }
   .dock__btn--tel  { color: var(--brand); }
+}
+
+
+/* ============================================================== the rig --- */
+/* Every stroke uses currentColor so the drawing follows the theme. */
+.rig__p {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.rig__body   { stroke-width: 6; }
+.rig__seat   { stroke-width: 6; }
+.rig__fender { stroke-width: 13; }
+.rig__fork   { stroke-width: 7; }
+.rig__bar    { stroke-width: 5; }
+.rig__trim   { stroke-width: 2.5; stroke: var(--fg-3); }
+.rig__vent   { stroke-width: 5; stroke: var(--brand); }
+.rig__lamp   { stroke-width: 6; stroke: var(--brand); fill: var(--brand); fill-opacity: .18; }
+
+/* Gradient stops styled from CSS so they track the theme. `currentColor`
+   inside a <stop> resolves inconsistently across engines. */
+.rig__skin-a { stop-color: var(--fg); stop-opacity: .22; }
+.rig__skin-b { stop-color: var(--fg); stop-opacity: .05; }
+
+.rig__well { fill: var(--bg); }
+.rig__tyre { fill: none; stroke: currentColor; stroke-width: 15; }
+.rig__rim  { fill: none; stroke: var(--brand); stroke-width: 4; }
+.rig__hole { fill: var(--bg); stroke: var(--fg-3); stroke-width: 3; }
+.rig__hub  { fill: var(--bg); stroke: currentColor; stroke-width: 5; }
+
+.rig__speed path {
+  fill: none;
+  stroke: var(--brand);
+  stroke-width: 4;
+  stroke-linecap: round;
+  opacity: .5;
 }

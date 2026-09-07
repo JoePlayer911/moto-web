@@ -272,21 +272,19 @@
   overflow: hidden;
 }
 
-/* The badge floats in the upper right, clear of the left-aligned headline. */
-.hero__badge {
+/* The scooter sits on the right, its wheels resting near the horizon line
+   that the canvas road grid converges to. */
+.rig {
   position: absolute;
-  inset-inline-end: 0;
-  inset-block-start: clamp(4.5rem, 15vh, 9rem);
-  inline-size: clamp(150px, 21vw, 320px);
-  aspect-ratio: 1;
-  will-change: transform;
+  inset-inline-end: clamp(-3rem, -2vw, 0rem);
+  inset-block-start: 50%;
+  inline-size: clamp(320px, 46vw, 700px);
+  translate: 0 -46%;
+  color: var(--fg);
   pointer-events: none;
+  will-change: transform;
 }
-.hero__badge img {
-  inline-size: 100%;
-  block-size: 100%;
-  filter: drop-shadow(0 30px 55px rgb(0 0 0 / 55%));
-}
+.rig__svg { inline-size: 100%; block-size: auto; overflow: visible; }
 
 .hero__lede {
   max-inline-size: min(100%, 38ch);
@@ -335,12 +333,14 @@
 /* Below the desktop breakpoint the badge rejoins the normal flow, sitting
    between the eyebrow and the headline. */
 @media (width < 62rem) {
-  .hero__inner { padding-block: clamp(6rem, 15vh, 8rem) 3.5rem; }
-  .hero__badge {
+  .hero__inner { padding-block: clamp(4.5rem, 11vh, 6rem) 3rem; }
+  .rig {
     position: static;
     order: -1;
-    inline-size: clamp(112px, 30vw, 175px);
-    margin-block: .4rem 1.5rem;
+    inline-size: min(104%, 400px);
+    translate: none;
+    margin-block: 0 .2rem;
+    margin-inline-start: -4%;
   }
   .hero__eyebrow { order: -2; }
   .hero__actions { flex-direction: column; align-items: stretch; }

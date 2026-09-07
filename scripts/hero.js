@@ -207,31 +207,30 @@ export function initHero() {
   draw();
   start();
 
-  initBadgeTilt();
+  initRigParallax();
 }
 
-/* --------------------------------------------------------- badge tilt --- */
-
-function initBadgeTilt() {
-  const badge = document.getElementById('heroBadge');
+/* ------------------------------------------------------- rig parallax --- */
+/* A gentle pointer-tracked drift. Deliberately translation only — rotating a
+   vehicle in 3D reads as a glitch rather than depth. */
+function initRigParallax() {
+  const badge = document.getElementById('heroRig');
   if (!badge) return;
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
 
-  let rx = 0, ry = 0, tx = 0, ty = 0, drift = 0, raf = 0;
+  let x = 0, y = 0, tx = 0, ty = 0, raf = 0;
 
   addEventListener('pointermove', (e) => {
-    tx = (e.clientY / innerHeight - 0.5) * -16;
-    ty = (e.clientX / innerWidth - 0.5) * 16;
+    tx = (e.clientX / innerWidth - 0.5) * 26;
+    ty = (e.clientY / innerHeight - 0.5) * 14;
   }, { passive: true });
 
   function frame() {
-    rx += (tx - rx) * 0.06;
-    ry += (ty - ry) * 0.06;
-    drift += 0.006;
-    const float = Math.sin(drift) * 8;
-    badge.style.transform =
-      `perspective(900px) rotateX(${rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg) translateY(${float.toFixed(2)}px)`;
+    x += (tx - x) * 0.05;
+    y += (ty - y) * 0.05;
+    // `translate` in CSS holds the layout offset; `transform` composes after it.
+    badge.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0)`;
     raf = requestAnimationFrame(frame);
   }
   raf = requestAnimationFrame(frame);

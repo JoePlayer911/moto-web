@@ -1,11 +1,15 @@
 /* ==========================================================================
-   cursor.js — trailing ring cursor with contextual labels + magnetic targets
-   Desktop / fine-pointer only. Never runs for touch or reduced-motion users,
-   so the native cursor is left completely alone where it matters.
+   cursor.js — custom pointer: a dot that leads, a ring that trails, and a
+   label pill that drops out from under the cursor on interactive targets.
+
+   Desktop / fine-pointer only, and never under reduced motion — the native
+   cursor is only hidden once this module has actually taken over, so touch,
+   no-JS and reduced-motion visitors keep the system pointer.
    ========================================================================== */
 
-const LERP_DOT = 0.9;
-const LERP_RING = 0.16;
+const LERP_DOT = 0.9;    // the dot is effectively the pointer: near-instant
+const LERP_PILL = 0.34;  // the label trails just enough to feel physical
+const LERP_RING = 0.16;  // the ring lags furthest
 const MAGNET_RADIUS = 90;
 const MAGNET_PULL = 0.34;
 
@@ -19,41 +23,69 @@ export function initCursor() {
 
   const dot = el.querySelector('.cursor__dot');
   const ring = el.querySelector('.cursor__ring');
+  const pill = el.querySelector('.cursor__pill');
   const label = el.querySelector('.cursor__label');
+  if (!dot || !ring || !pill || !label) return;
 
   let mx = innerWidth / 2, my = innerHeight / 2;
-  let dx = mx, dy = my, rx = mx, ry = my;
+  let dx = mx, dy = my;
+  let px = mx, py = my;
+  let rx = mx, ry = my;
   let live = false;
 
   addEventListener('pointermove', (e) => {
     if (e.pointerType !== 'mouse') return;
     mx = e.clientX;
     my = e.clientY;
-    if (!live) { live = true; el.classList.add('is-live'); }
+    if (!live) {
+      live = true;
+      el.classList.add('is-live');
+      // Take the system cursor away only once a real mouse has actually
+      // moved. On a hybrid device (touchscreen laptop, tablet + trackpad)
+      // `pointer: fine` can match while the visitor is using touch — hiding
+      // their cursor before seeing one would strand them without a pointer.
+      document.documentElement.classList.add('has-cursor');
+    }
+  }, { passive: true });
+
+  // Switched back to touch on a hybrid device — give the system cursor back.
+  addEventListener('touchstart', () => {
+    live = false;
+    el.classList.remove('is-live');
+    document.documentElement.classList.remove('has-cursor');
   }, { passive: true });
 
   document.addEventListener('pointerleave', () => { live = false; el.classList.remove('is-live'); });
   document.addEventListener('pointerenter', () => { live = true; el.classList.add('is-live'); });
 
-  // --- hover targets -------------------------------------------------------
+  // Keep the pointer hidden while a native UI surface has focus instead.
+  addEventListener('blur', () => el.classList.remove('is-live'));
+
+  /* ---- hover targets --------------------------------------------------- */
   const HOVERABLE = 'a, button, [data-cursor], input, label, .post';
+
+  function enter(target) {
+    const labelled = target.closest('[data-cursor]');
+    const text = labelled?.dataset.cursor || '';
+    if (text) label.textContent = text;
+    el.classList.add('is-hover');
+    el.classList.toggle('has-label', Boolean(text));
+  }
+
+  function leave() {
+    el.classList.remove('is-hover', 'has-label');
+  }
 
   document.addEventListener('pointerover', (e) => {
     const hit = e.target.closest?.(HOVERABLE);
-    if (!hit) return;
-    const text = hit.closest('[data-cursor]')?.dataset.cursor || '';
-    label.textContent = text;
-    el.classList.add('is-hover');
-    el.classList.toggle('has-label', Boolean(text));
+    if (hit) enter(hit);
   });
 
   document.addEventListener('pointerout', (e) => {
-    if (e.target.closest?.(HOVERABLE) && !e.relatedTarget?.closest?.(HOVERABLE)) {
-      el.classList.remove('is-hover', 'has-label');
-    }
+    if (e.target.closest?.(HOVERABLE) && !e.relatedTarget?.closest?.(HOVERABLE)) leave();
   });
 
-  // --- magnetic elements ---------------------------------------------------
+  /* ---- magnetic elements ----------------------------------------------- */
   const magnets = [...document.querySelectorAll('[data-magnetic]')];
 
   function magnetise() {
@@ -74,15 +106,20 @@ export function initCursor() {
     }
   }
 
-  // --- loop ----------------------------------------------------------------
+  /* ---- loop ------------------------------------------------------------ */
   function frame() {
     dx += (mx - dx) * LERP_DOT;
     dy += (my - dy) * LERP_DOT;
+    px += (mx - px) * LERP_PILL;
+    py += (my - py) * LERP_PILL;
     rx += (mx - rx) * LERP_RING;
     ry += (my - ry) * LERP_RING;
 
-    dot.style.transform = `translate(${dx}px, ${dy}px) translate(-50%, -50%)`;
-    ring.style.transform = `translate(${rx}px, ${ry}px) translate(-50%, -50%)`;
+    // The -50% centring lives in CSS so it can compose with the pill's own
+    // drop-out transform without the two fighting over one property.
+    dot.style.transform = `translate(${dx.toFixed(2)}px, ${dy.toFixed(2)}px) translate(-50%, -50%)`;
+    ring.style.transform = `translate(${rx.toFixed(2)}px, ${ry.toFixed(2)}px) translate(-50%, -50%)`;
+    pill.style.transform = `translate(${px.toFixed(2)}px, ${py.toFixed(2)}px)`;
 
     magnetise();
     requestAnimationFrame(frame);
