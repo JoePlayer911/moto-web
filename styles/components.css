@@ -23,8 +23,16 @@
   white-space: nowrap;
   overflow: hidden;
   isolation: isolate;
-  transition: color .35s var(--e-out), border-color .35s var(--e-out);
+  transition:
+    color .35s var(--e-out),
+    border-color .35s var(--e-out),
+    transform .28s var(--e-out);
 }
+
+/* A small settle downward, like the button takes the press. */
+.btn:hover,
+.btn:focus-visible { transform: translateY(2px); }
+.btn:active { transform: translateY(3px); }
 .btn .ico { inline-size: 15px; block-size: 15px; flex: 0 0 auto; }
 
 /* wipe fill on hover */
@@ -105,9 +113,10 @@
   font-size: .68rem;
   font-weight: 600;
   letter-spacing: .08em;
-  transition: color .25s, border-color .25s, background-color .25s;
+  transition: color .25s, border-color .25s, background-color .25s, transform .28s var(--e-out);
 }
-.chip:hover { color: var(--fg); border-color: var(--fg-3); }
+.chip:hover { color: var(--fg); border-color: var(--fg-3); transform: translateY(2px); }
+.chip:active { transform: translateY(3px); }
 
 .chip--lang .chip__zh,
 .chip--lang .chip__en { transition: color .25s, opacity .25s; opacity: .38; }

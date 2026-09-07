@@ -10,8 +10,6 @@
 const LERP_DOT = 0.9;    // the dot is effectively the pointer: near-instant
 const LERP_PILL = 0.34;  // the label trails just enough to feel physical
 const LERP_RING = 0.16;  // the ring lags furthest
-const MAGNET_RADIUS = 90;
-const MAGNET_PULL = 0.34;
 
 export function initCursor() {
   const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
@@ -85,27 +83,6 @@ export function initCursor() {
     if (e.target.closest?.(HOVERABLE) && !e.relatedTarget?.closest?.(HOVERABLE)) leave();
   });
 
-  /* ---- magnetic elements ----------------------------------------------- */
-  const magnets = [...document.querySelectorAll('[data-magnetic]')];
-
-  function magnetise() {
-    for (const m of magnets) {
-      const r = m.getBoundingClientRect();
-      if (r.width === 0) continue;
-      const cx = r.left + r.width / 2;
-      const cy = r.top + r.height / 2;
-      const dist = Math.hypot(mx - cx, my - cy);
-      const reach = Math.max(r.width, r.height) / 2 + MAGNET_RADIUS;
-
-      if (dist < reach) {
-        const pull = (1 - dist / reach) * MAGNET_PULL;
-        m.style.transform = `translate(${(mx - cx) * pull}px, ${(my - cy) * pull}px)`;
-      } else if (m.style.transform) {
-        m.style.transform = '';
-      }
-    }
-  }
-
   /* ---- loop ------------------------------------------------------------ */
   function frame() {
     dx += (mx - dx) * LERP_DOT;
@@ -121,7 +98,6 @@ export function initCursor() {
     ring.style.transform = `translate(${rx.toFixed(2)}px, ${ry.toFixed(2)}px) translate(-50%, -50%)`;
     pill.style.transform = `translate(${px.toFixed(2)}px, ${py.toFixed(2)}px)`;
 
-    magnetise();
     requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
