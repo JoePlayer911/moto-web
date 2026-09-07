@@ -230,11 +230,44 @@
   z-index: -2;
 }
 
+/* Masked so the footage owns the space above the horizon and dissolves before
+   it reaches the road grid, rather than sitting in a visible rectangle. */
+.hero__film {
+  position: absolute;
+  inset: 0;
+  z-index: -3;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 1.4s var(--e-out);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 13%, #000 43%, transparent 66%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 13%, #000 43%, transparent 66%);
+}
+.hero__film.is-on { opacity: 1; }
+
+.hero__video {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  object-position: center 58%;
+  /* Push the footage into the brand's amber-on-black range. */
+  filter: grayscale(.32) sepia(.55) hue-rotate(-14deg) saturate(1.45) contrast(1.12) brightness(.36);
+  opacity: .46;
+  mix-blend-mode: screen;
+}
+
+/* On paper, screen would blow out — darken into the page instead. */
+:root[data-theme='light'] .hero__video {
+  filter: grayscale(.35) sepia(.5) hue-rotate(-12deg) saturate(1.25) contrast(.98) brightness(1.08);
+  opacity: .16;
+  mix-blend-mode: multiply;
+}
+
 .hero__scrim {
   position: absolute;
   inset: 0;
   z-index: -1;
   background:
+    linear-gradient(96deg, var(--bg) 0%, transparent 58%),
     linear-gradient(180deg, var(--bg) 0%, transparent 26%, transparent 62%, var(--bg) 99%),
     radial-gradient(72% 52% at 72% 40%, rgb(242 162 43 / 13%) 0%, transparent 68%);
 }

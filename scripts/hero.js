@@ -208,6 +208,7 @@ export function initHero() {
   start();
 
   initBadgeTilt();
+  initFilm();
 }
 
 /* --------------------------------------------------------- badge tilt --- */
@@ -239,5 +240,56 @@ function initBadgeTilt() {
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) { cancelAnimationFrame(raf); raf = 0; }
     else if (!raf) raf = requestAnimationFrame(frame);
+  });
+}
+
+/* ------------------------------------------------------------- hero film --- */
+/**
+ * Decides whether the ride footage is worth its bytes, and plays it if so.
+ * Markup deliberately carries no `autoplay` and preload="none", so nothing is
+ * fetched until this runs. When we bail out, the <video> still paints its
+ * poster frame — a 66 KB still with the same grade — so the hero keeps its
+ * atmosphere for a fraction of the data.
+ */
+function initFilm() {
+  const film = document.querySelector('.hero__film');
+  const video = document.getElementById('heroVideo');
+  const hero = document.getElementById('hero');
+  if (!film || !video || !hero) return;
+
+  const conn = navigator.connection || {};
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const saveData = conn.saveData === true;
+  const slow = /(^|-)2g$/.test(conn.effectiveType || '');
+  const small = matchMedia('(max-width: 46rem)').matches;
+
+  // Poster-only: still graded, still atmospheric, ~1/15th of the bytes.
+  if (reduced || saveData || slow || small) {
+    film.classList.add('is-on');
+    return;
+  }
+
+  let playing = false;
+  const play = () => {
+    // Autoplay can still be refused (battery saver, iOS low power); the poster
+    // simply stays, which is a perfectly good outcome.
+    video.play().then(() => { playing = true; }).catch(() => {});
+  };
+
+  video.addEventListener('loadeddata', () => film.classList.add('is-on'), { once: true });
+
+  video.preload = 'auto';
+  video.load();
+  play();
+
+  const io = new IntersectionObserver(([e]) => {
+    if (e.isIntersecting) play();
+    else if (playing) video.pause();
+  }, { threshold: 0 });
+  io.observe(hero);
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) video.pause();
+    else if (hero.getBoundingClientRect().bottom > 0) play();
   });
 }

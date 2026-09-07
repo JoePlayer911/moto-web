@@ -158,6 +158,16 @@
 
 <!-- ================================================================ HERO -->
 <section class="hero" id="hero">
+  <!-- Ride footage graded into the palette, masked to the area above the
+       canvas horizon. Never autoplays from markup: scripts/hero.js decides,
+       so phones and Save-Data visitors get the poster frame instead. -->
+  <div class="hero__film" aria-hidden="true">
+    <video class="hero__video" id="heroVideo" muted loop playsinline
+           preload="none" poster="assets/hero-ride.jpg" tabindex="-1">
+      <source src="assets/hero-ride.mp4" type="video/mp4">
+    </video>
+  </div>
+
   <canvas class="hero__canvas" id="heroCanvas" aria-hidden="true"></canvas>
   <div class="hero__scrim" aria-hidden="true"></div>
 

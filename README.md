@@ -24,9 +24,9 @@ scripts/
   main.js               boot + nav, menu, loader, scroll-spy, copy, dock
   i18n.js               zh-TW / en dictionary and DOM binder
   theme.js              dark/light with a View-Transitions iris sweep
-  cursor.js             trailing ring cursor + magnetic targets
+  cursor.js             trailing ring cursor + label pill
   reveal.js             split-text, scroll reveals, odometer counters
-  hero.js               canvas road grid + badge parallax
+  hero.js               canvas road grid, badge parallax, hero film
   rail.js               scroll-reactive marquee + pinned horizontal rail
   quote.js              four-question valuation estimator
   instagram.js          renders the cached feed
@@ -100,6 +100,7 @@ around to step 1.
 | Valuation pricing | the `MODEL` object at the top of `scripts/quote.js` |
 | Brand colours, type scale, spacing | the `:root` blocks in `styles/base.css` |
 | Logo / icons / social card | `python tools/make-assets.py` regenerates everything from the source logo |
+| Hero footage | replace `assets/hero-ride.mp4` + `assets/hero-ride.jpg`; grading lives in `.hero__video` in `styles/layout.css` |
 
 The dictionary is the single source of truth for copy. The Chinese strings in
 `index.html` are only the no-JavaScript fallback — if you change a line, change
@@ -147,3 +148,32 @@ Two things to update once you know the final URL:
 - Theme and language resolve before first paint, so there is no flash.
 - `AutoDealer` JSON-LD including all three branches, Open Graph, a web manifest,
   and maskable icons.
+
+
+---
+
+## Hero footage
+
+`assets/hero-ride.mp4` is an 8-second silent loop (1024x576, ~980 KB) trimmed
+and re-encoded from a [Mixkit](https://mixkit.co/free-stock-video/) clip. The
+Mixkit Free License permits use in commercial projects without attribution;
+the credit here is courtesy, not obligation.
+
+It is colour-graded **in CSS**, not baked into the file — `filter` plus
+`mix-blend-mode` on `.hero__video` pushes it into the brand's amber-on-black
+range and swaps to a `multiply` treatment on the light theme. Swapping in
+different footage therefore needs no re-grading.
+
+**A note on sourcing.** YouTube clips titled "no copyright" are almost always
+uploaded under the *Standard YouTube License*, which grants no right to
+download or re-host them — the phrase is the uploader's claim in a title, not
+a licence, and re-upload channels frequently do not hold the rights they are
+waiving. Embedding the official player is permitted; extracting the file is
+not. Prefer a source whose licence is explicit: Mixkit, Coverr, Pexels and
+Pixabay all publish theirs.
+
+The markup carries no `autoplay` and `preload="none"`, so nothing downloads
+until `scripts/hero.js` decides it is worth the bytes. It bails out — leaving
+the poster frame, which carries the same grade — on phones, on Save-Data, on
+2G, and under `prefers-reduced-motion`. Playback also pauses when the hero
+scrolls out of view or the tab is hidden.
